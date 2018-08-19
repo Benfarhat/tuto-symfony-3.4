@@ -41,7 +41,7 @@ class BlogController extends Controller
      * @Route("/blog/{id}", name="blog_show")
      */
     //public function show(ArticleRepository $repo, $id)
-    // Utilisation du param Converter de symfony
+    // Utilisation du param Converter de symfony qui va interpoler et comprendre qu'il a besoin d'un article et que d'après la route il faut un id
     public function show(Article $article)
     {
         //$repo = $this->getDoctrine()->getRepository(Article::class);
