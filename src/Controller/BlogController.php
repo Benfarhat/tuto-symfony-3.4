@@ -5,6 +5,9 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Doctrine\Common\Persistence\ObjectManager;
 use App\Entity\Article;
 use App\Repository\ArticleRepository;
@@ -43,24 +46,36 @@ class BlogController extends Controller
      */
     public function create(Request $request, ObjectManager $manager)
     {
-        dump($request);
-        dump($request->request->count());
+        $article = new Article();
 
-        if($request->request->count() > 0){
-            
-            $article = new Article();
-            $article->setTitle($request->request->get('title'))
-                    ->setContent($request->request->get('content'))
-                    ->setImage($request->request->get('image'))
-                    ->setCreatedAt(new \DateTime());
+        $form = $this->createFormBuilder($article)
+                    ->add('title', TextType::class, [
+                        'label' => 'Titre',
+                        'attr' => [
+                            'placeholder' => "Titre de l'article",
+                            'cclass' => "form-control"
+                        ]])
+                    ->add('content', TextareaType::class, [
+                        'label' => 'Contenu',
+                        'attr' => [
+                            'placeholder' => "Contenu de l'article",
+                            'cclass' => "form-control"
+                        ]])
+                    ->add('image', TextType::class, [
+                        'label' => 'Image',
+                        'attr' => [
+                            'placeholder' => "URL de l'image",
+                            'class' => "form-control"
+                        ]])
+                    ->add('save', SubmitType::class, [
+                        'label' => 'Enregistrer',
+                        'attr' => [
+                            'class' => 'btn btn-primary'
+                        ]])
+                    ->getForm();
 
-            $manager->persist($article);
-
-            $manager->flush();
-
-            return $this-redirectToRoute('blog_show',['id' => $article->getId()]);
-        }
-        return $this->render('blog/create.html.twig', [
+        return $this->render('blog/create.html.twig',[
+            'formArticle' => $form->createView()
         ]);
     }
 
