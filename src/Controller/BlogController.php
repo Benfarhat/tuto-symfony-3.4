@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Doctrine\Common\Persistence\ObjectManager;
 use App\Entity\Article;
 use App\Repository\ArticleRepository;
+use App\Form\ArticleType;
 
 class BlogController extends Controller
 {
@@ -43,39 +44,42 @@ class BlogController extends Controller
 
     /**
      * @Route("/blog/new", name="blog_create")
+     * @Route("/blog/{id}/edit", name="blog_edit")
      */
-    public function create(Request $request, ObjectManager $manager)
+    public function form(Article $article = null, Request $request, ObjectManager $manager)
     {
-        $article = new Article();
+        if(is_null($article)){
+            $article = new Article();
+        }
 
+        /*
         $form = $this->createFormBuilder($article)
-                    ->add('title', TextType::class, [
-                        'label' => 'Titre',
-                        'attr' => [
-                            'placeholder' => "Titre de l'article",
-                            'cclass' => "form-control"
-                        ]])
-                    ->add('content', TextareaType::class, [
-                        'label' => 'Contenu',
-                        'attr' => [
-                            'placeholder' => "Contenu de l'article",
-                            'cclass' => "form-control"
-                        ]])
-                    ->add('image', TextType::class, [
-                        'label' => 'Image',
-                        'attr' => [
-                            'placeholder' => "URL de l'image",
-                            'class' => "form-control"
-                        ]])
-                    ->add('save', SubmitType::class, [
-                        'label' => 'Enregistrer',
-                        'attr' => [
-                            'class' => 'btn btn-primary'
-                        ]])
+                    ->add('title')
+                    ->add('content')
+                    ->add('image')
                     ->getForm();
+        */
 
-        return $this->render('blog/create.html.twig',[
-            'formArticle' => $form->createView()
+        $form = $this->createForm(ArticleType::class, $article);
+
+        // Traitement de la requête, vérification des données, affectation de chaque champ à une propriété de l'objet
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            if(!$article->getId())
+                $article->setCreatedAt(new \DateTime());
+            $manager->persist($article);
+            $manager->flush(); // Enregistrement dans la base et reception d'un id
+
+            return $this->redirectToRoute('blog_show', ['id' => $article->getId()]);
+
+            
+        }
+        dump($article->getId());
+
+        return $this->render('blog/form.html.twig',[
+            'formArticle' => $form->createView(),
+            'editMode' => $article->getId() !== null
         ]);
     }
 

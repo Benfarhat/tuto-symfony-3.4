@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h1>{{ (editMode) ? 'Edition' : 'Création' }} d'un article</h1>
+    {% form_theme formArticle 'bootstrap_4_layout.html.twig' %}
+    {{ form_start(formArticle) }}
+    <div class="class-group">
+        <label for="">Titre</label>
+        {{ form_row(formArticle.title, { 'attr' : { 'placeholder' : "Titre de l'article"}, 'label' : false }) }}
+    </div>
+    <div class="class-group">
+        <label for="">Contenu</label>
+        {{ form_row(formArticle.content, { 'attr' : { 'placeholder' : "Contenu de l'article"}, 'label' : false }) }}
+    </div>
+    <div class="class-group">
+        <label for="">Image</label>
+        {{ form_row(formArticle.image, { 'attr' : { 'placeholder' : "URL de l'image de l'article"}, 'label' : false }) }}
+    </div>
+    <div class="class-group">
+        <button type="submit" class="btn btn-{{ (editMode) ? "primary" : "secondary" }}">{{ (editMode) ? "Editer l'article" : "Créer l'article" }}</button>
+    </div>
+    {{ form_end(formArticle) }}
+
+    <hr>
+    {#
+    {{ form(formArticle) }}
+    #}
+{% endblock %}

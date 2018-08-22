@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
@@ -18,21 +19,37 @@ class Article
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(
+     *      min = 10,
+     *      max = 255,
+     *      minMessage = "Votre titre doit avoir au moins {{ limit }} characteres",
+     *      maxMessage = "Votre titre doit avoir au plus {{ limit }} characteres"
+     * )
      */
     private $title;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\Length(
+     *      min = 10,
+     *      minMessage = "Le contenu de votre article est trop court, il doit avoir au moins {{ limit }} characteres"
+     * )
      */
     private $content;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255)     
+     * @Assert\Url(
+     *    message = "L'URL de votre image '{{ value }}' n'est pas valide",
+     *    checkDNS = "ANY",
+     *    dnsMessage = "Le Host '{{ value }}' n'a pu être résolu au niveau DNS (indisponible)."
+     * )
      */
     private $image;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\DateTime()
      */
     private $createdAt;
 
