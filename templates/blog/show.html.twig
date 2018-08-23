@@ -2,17 +2,29 @@
 
 {% block body %}
 
-<section class="articles">
-    <!-- Article {{ article.id }} -->
     <article>
         <h2>{{ article.title }}</h2>
-        <div class="metada">écrit le {{ article.createdAt | date('d/m/Y') }} à  {{ article.createdAt | date('H:i') }} dans la catégorie politiquessss</div>
+        <div class="metada">écrit le {{ article.createdAt | date('d/m/Y') }} à  {{ article.createdAt | date('H:i') }} dans la catégorie <b>{{ article.category.title }}</b></div>
         <div class="content">
             <img src="{{ article.image }}" alt="">
             <hr>
             {{ article.content | raw }}
         </div>
     </article>
-</section>
+    <section id="commantaires">
+        {% for comment in article.comments %}
+        <div class="comment">
+            <div class="row">
+                <div class="col-3">
+                    {{ comment.author }} (<small>{{ comment.createdAt | date('d/m/Y à H:i') }}</small>)
+                </div>
+                <div class="col">
+                    {{ comment.content | raw }}
+                </div>
+            </div>
+        </div>
+        <hr>
+        {% endfor %}
+    </section>
 
 {% endblock %}
