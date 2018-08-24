@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h1>Inscription</h1>
+
+    
+    {% form_theme formSecurity 'bootstrap_4_layout.html.twig' %}
+    {{ form_start(formSecurity) }}
+    <div class="class-group">
+        <label for="">Username</label>
+        {{ form_row(formSecurity.username, { 'attr' : { 'placeholder' : "Username"}, 'label' : false }) }}
+    </div>
+    <div class="class-group">
+        <label for="">Email</label>
+        {{ form_row(formSecurity.email, { 'attr' : { 'placeholder' : "Votre email"}, 'label' : false }) }}
+    </div>
+    <div class="class-group">
+        <label for="">Password</label>
+        {{ form_row(formSecurity.password, { 'attr' : { 'placeholder' : "mot de passe"}, 'label' : false }) }}
+    </div>
+    <div class="class-group">
+        <label for="">Confirm Password</label>
+        {{ form_row(formSecurity.confirm_password, { 'attr' : { 'placeholder' : "Confirmer votre mot de passe"}, 'label' : false }) }}
+    </div>
+    <div class="class-group">
+        <button type="submit" class="btn btn-primary">Inscription</button>
+    </div>
+    {{ form_end(formSecurity) }}
+
+    <hr>
+    {#
+    {{ form(formArticle) }}
+    #}
+{% endblock %}
