@@ -10,6 +10,10 @@
         {{ form_row(formArticle.title, { 'attr' : { 'placeholder' : "Titre de l'article"}, 'label' : false }) }}
     </div>
     <div class="class-group">
+        <label for="">Catégorie</label>
+        {{ form_row(formArticle.category, { 'label' : false }) }}
+    </div>
+    <div class="class-group">
         <label for="">Contenu</label>
         {{ form_row(formArticle.content, { 'attr' : { 'placeholder' : "Contenu de l'article"}, 'label' : false }) }}
     </div>
