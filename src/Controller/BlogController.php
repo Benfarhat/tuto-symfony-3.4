@@ -2,16 +2,18 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Doctrine\Common\Persistence\ObjectManager;
 use App\Entity\Article;
-use App\Repository\ArticleRepository;
+use App\Entity\Comment;
 use App\Form\ArticleType;
+use App\Form\CommentType;
+use App\Repository\ArticleRepository;
+use Symfony\Component\HttpFoundation\Request;
+use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class BlogController extends Controller
 {
@@ -88,13 +90,36 @@ class BlogController extends Controller
      */
     //public function show(ArticleRepository $repo, $id)
     // Utilisation du param Converter de symfony qui va interpoler et comprendre qu'il a besoin d'un article et que d'après la route il faut un id
-    public function show(Article $article)
+    public function show(Article $article, Request $request, ObjectManager $manager)
     {
         //$repo = $this->getDoctrine()->getRepository(Article::class);
         //$article = $repo->find($id);
+
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class, $comment);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+
+            $comment->setCreatedAt(new \DateTime());
+            $comment->setArticle($article);
+            if($this->getUser()){
+                $comment->setAuthor($this->getUser()->getUsername());  
+            } else {
+                $comment->setAuthor("Anonymous");
+            }
+            
+            
+            $manager->persist($comment);
+
+            $manager->flush();
+            return $this->redirectToRoute('blog_show', ['id' => $article->getId()]);
+        }
         
         return $this->render('blog/show.html.twig', [
-            'article' => $article
+            'article' => $article,
+            'commentForm' => $form->createView()
         ]);
     }
 

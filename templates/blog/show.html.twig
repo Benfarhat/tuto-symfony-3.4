@@ -12,6 +12,7 @@
         </div>
     </article>
     <section id="commantaires">
+        <h2>{{ article.comments | length }} commentaires</h2>
         {% for comment in article.comments %}
         <div class="comment">
             <div class="row">
@@ -25,6 +26,15 @@
         </div>
         <hr>
         {% endfor %}
+        {% if app.user %}
+        {% form_theme commentForm 'bootstrap_4_layout.html.twig' %}
+        {{ form_start(commentForm) }}
+        {{ form_row(commentForm.content, { 'attr' : { 'placeholder' : 'Contenu de votre commentaire', 'rows' : 10}}) }}
+        <button type="submit" class="btn btn-warning">Commenter</button>
+        {{ form_end(commentForm) }}
+        {% else %}
+            <a>Veuillez vous <a class="btn" href="{{ path('security_login') }}">connecter</a> pour pouvoir commenter</p>
+        {% endif %}
     </section>
 
 {% endblock %}
